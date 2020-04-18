@@ -59,10 +59,16 @@ class App extends React.Component {
       const y = prediction.bbox[1];
       const width = prediction.bbox[2];
       const height = prediction.bbox[3];
+      // Run Kalman Tracker
+      const filtered = kalman_filter(x, y, width, height);
+      const x_f = filtered[0];
+      const y_f = filtered[1];
+      const width_f = filtered[2];
+      const height_f = filtered[3];
       // Draw the bounding box.
       ctx.strokeStyle = "#00FFFF";
       ctx.lineWidth = 4;
-      ctx.strokeRect(x, y, width, height);
+      ctx.strokeRect(x_f, y_f, width_f, height_f);
       // Draw the label background.
       ctx.fillStyle = "#00FFFF";
       const textWidth = ctx.measureText(prediction.class).width;
@@ -100,6 +106,10 @@ class App extends React.Component {
       </div>
     );
   }
+}
+
+function kalman_filter(x, y, width, height) {
+  return [x, y, height, width];
 }
 
 const rootElement = document.getElementById("root");
